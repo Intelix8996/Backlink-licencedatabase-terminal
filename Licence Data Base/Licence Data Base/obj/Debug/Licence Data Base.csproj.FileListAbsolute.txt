@@ -1,0 +1,8 @@
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\obj\Debug\Licence Data Base.csprojResolveAssemblyReference.cache
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Debug\Licence Data Base.exe
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Debug\Licence Data Base.pdb
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\obj\Debug\Licence Data Base.exe
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\obj\Debug\Licence Data Base.pdb
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Debug\BytesRoad.Diag.dll
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Debug\BytesRoad.Net.Ftp.dll
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Debug\BytesRoad.Net.Sockets.dll
