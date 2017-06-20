@@ -17,15 +17,15 @@ namespace Licence_Data_Base
         static void Main(string[] args)
         {
             string Path_B = ReadDBPath();
-            CfgOut FTPInfo = ReadFTPcfg();
-
-            if (!FTPInfo.isLocalDB)
-            {
-                ReadFTP(FTPInfo, "Databases/" + Path_B + ".bcldb");
-            }
+            CFGBundle FTPInfo = ReadFTPcfg();
 
             if (!String.IsNullOrWhiteSpace(Path_B))
             {
+                if (!FTPInfo.isLocalDB)
+                {
+                    ReadFTP(FTPInfo, Path_B);
+                }
+
                 List<DataBase> LicenceList = new List<DataBase>();
 
                 LicenceList = ReadDB(Path_B);
@@ -108,7 +108,7 @@ namespace Licence_Data_Base
 
                 if (!FTPInfo.isLocalDB)
                 {
-                    WriteFTP(FTPInfo, "Databases/" + Path_B + ".bcldb");
+                    WriteFTP(FTPInfo, Path_B);
                 }
 
                 Console.Clear();
@@ -155,12 +155,12 @@ namespace Licence_Data_Base
             return path;
         }
 
-        private static CfgOut ReadFTPcfg()
+        private static CFGBundle ReadFTPcfg()
         {
             FileStream FS = new FileStream("Config/ftpConfig.cfg", FileMode.OpenOrCreate);
             StreamReader SR = new StreamReader(FS);
 
-            CfgOut OutOfCfg = new CfgOut();
+            CFGBundle OutOfCfg = new CFGBundle();
 
             OutOfCfg.isLocalDB = Convert.ToBoolean(SR.ReadLine());
             OutOfCfg.PassiveMode = Convert.ToBoolean(SR.ReadLine());
@@ -197,7 +197,7 @@ namespace Licence_Data_Base
             return UID_B;
         }
 
-        private static void ReadFTP(CfgOut FTPInfo, string Path)
+        private static void ReadFTP(CFGBundle FTPInfo, string Path)
         {
             FtpClient client = new FtpClient();
 
@@ -217,7 +217,7 @@ namespace Licence_Data_Base
             client.Disconnect(FTPInfo.TimeoutFTP);
         }
 
-        private static void WriteFTP(CfgOut FTPInfo, string Path)
+        private static void WriteFTP(CFGBundle FTPInfo, string Path)
         {
             FtpClient client = new FtpClient();
 
@@ -265,7 +265,7 @@ namespace Licence_Data_Base
         }
     }
 
-    struct CfgOut
+    struct CFGBundle
     {
         public bool isLocalDB;
         public bool PassiveMode;
