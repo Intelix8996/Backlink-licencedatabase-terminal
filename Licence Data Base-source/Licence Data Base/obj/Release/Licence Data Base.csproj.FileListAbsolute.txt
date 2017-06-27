@@ -5,3 +5,4 @@ H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Release\BytesR
 H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\bin\Release\BytesRoad.Net.Sockets.dll
 H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\obj\Release\Licence Data Base.exe
 H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\obj\Release\Licence Data Base.pdb
+H:\Visual Studio\Projects\Licence Data Base\Licence Data Base\obj\Release\Licence Data Base.csprojResolveAssemblyReference.cache
