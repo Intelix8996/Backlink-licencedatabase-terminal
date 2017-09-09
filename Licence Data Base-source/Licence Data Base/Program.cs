@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using BytesRoad.Net.Ftp;
 
@@ -11,11 +9,16 @@ namespace Licence_Data_Base
     {
         enum LicenceTypes
         {
-
+            Developer = 0,
+            Tester,
+            TesterYoutube,
+            Youtuber,
+            Player,
         }
 
         static void Main(string[] args)
         {
+            Console.SetWindowSize(165, 35);
             Console.WriteLine("Reading configs...");
             string Path_B = ReadDBPath();
             CFGBundle FTPInfo = ReadFTPcfg();
@@ -36,7 +39,7 @@ namespace Licence_Data_Base
                 string Input = "";
                 string[] InputStrings = { " " };
 
-                Console.Write("\nReady!\n\n|--------------------------------------|\n|Licence Data Base Access Terminal v1.1|\n|       Made by Nikolay Repin          | \n|            Backlink 2017             |\n|--------------------------------------|\n");
+                Console.Write("\nReady!\n\n|--------------------------------------|\n|Licence Data Base Access Terminal v1.2|\n|       Made by Nikolay Repin          | \n|            Backlink 2017             |\n|--------------------------------------|\n");
 
                 while (InputStrings[0].ToLower() != "quit")
                 {
@@ -46,18 +49,18 @@ namespace Licence_Data_Base
 
                     InputStrings = Input.Split(' ');
 
-                    if (InputStrings[0].ToLower() == "database" && InputStrings[1].ToLower() == "add" && InputStrings.Length == 6)
+                    if (InputStrings[0].ToLower() == "database" && InputStrings[1].ToLower() == "add" && InputStrings.Length == 8)
                     {
-                        Console.Write("Adding new record: \n\t\tName: " + Convert.ToString(InputStrings[2]) + "\n\t\tLicence Type: " + Convert.ToString(InputStrings[3]) + "\n\t\tDate of Issue: " + Convert.ToString(InputStrings[4]) + "\n\t\tDate of Expiry: " + Convert.ToString(InputStrings[5]) + "\n\n");
-                        LicenceList.Add(new DataBase(LicenceList, InputStrings[2], Convert.ToInt16(InputStrings[3]), InputStrings[4], InputStrings[5], UIDGen(LicenceList)));
+                        Console.Write("Adding new record: \n\t\tName: " + Convert.ToString(InputStrings[2]) + "\n\t\tLicence Type: " + Convert.ToString(InputStrings[3]) + "\n\t\tDate of Issue: " + Convert.ToString(InputStrings[4]) + "\n\t\tDate of Expiry: " + Convert.ToString(InputStrings[5]) + "\n\t\tUsername: " + Convert.ToString(InputStrings[6]) + "\n\t\tPassword: " + Convert.ToString(InputStrings[7]) + "\n\n");
+                        LicenceList.Add(new DataBase(LicenceList, InputStrings[2], Convert.ToInt16(InputStrings[3]), InputStrings[4], InputStrings[5], UIDGen(LicenceList), InputStrings[6], InputStrings[7]));
                     }
 
                     if (InputStrings[0].ToLower() == "database" && InputStrings[1].ToLower() == "list" && InputStrings.Length == 2)
                     {
-                        Console.Write("Listing all records...\n\n|№\t|Name\t\t\t|Licence Type\t|Date of Issue\t|Date of Expiry\t|UID\t\t|\n");
+                        Console.Write("Listing all records...\n\n|№\t|Name\t\t\t|Licence Type\t\t|Date of Issue\t|Date of Expiry\t|UID\t\t|Username\t|Password|\n");
                         foreach (DataBase DB in LicenceList)
                         {
-                            Console.WriteLine(" " + Convert.ToString(DB.Num) + "\t " + DB.Name + "\t " + DB.LicenceType + "\t\t " + DB.DeclarationDate + "\t " + DB.ExpiryDate + "\t " + DB.UserID);
+                            Console.WriteLine(" " + Convert.ToString(DB.Num) + "\t " + DB.Name + "\t " + DB.LicenceType + " (" + (LicenceTypes)DB.LicenceType + ")\t " + DB.DeclarationDate + "\t " + DB.ExpiryDate + "\t " + DB.UserID + "\t " + DB.Username + "\t " + DB.UserPassword);
                         }
                     }
 
@@ -97,13 +100,21 @@ namespace Licence_Data_Base
 
                         InputStrings = Input.Split(' ');
 
-                        LicenceList[TargetNumber].Name = InputStrings[0];
-                        LicenceList[TargetNumber].LicenceType = Convert.ToInt16(InputStrings[1]);
-                        LicenceList[TargetNumber].DeclarationDate = InputStrings[2];
-                        LicenceList[TargetNumber].ExpiryDate = InputStrings[3];
+                        try
+                        {
+                            LicenceList[TargetNumber].Name = InputStrings[0];
+                            LicenceList[TargetNumber].LicenceType = Convert.ToInt16(InputStrings[1]);
+                            LicenceList[TargetNumber].DeclarationDate = InputStrings[2];
+                            LicenceList[TargetNumber].ExpiryDate = InputStrings[3];
+                            LicenceList[TargetNumber].Username = InputStrings[4];
+                            LicenceList[TargetNumber].UserPassword = InputStrings[5];
 
-                        Console.WriteLine("Record in slot " + Convert.ToString(TargetNumber + 1) + " successfully edited!\n");
+                            Console.WriteLine("Record in slot " + Convert.ToString(TargetNumber + 1) + " successfully edited!\n");
+                        }
+                        catch { Console.Write("\n\nError.\n\n"); }
                     }
+                    if (InputStrings[0].ToLower() == "clear" && InputStrings.Length == 1)
+                        Console.Clear();
                 }
 
                 FileStream FS = new FileStream(Path_B, FileMode.Create);
@@ -112,7 +123,7 @@ namespace Licence_Data_Base
                 foreach (DataBase DB in LicenceList)
                 {
                     Console.WriteLine("Writing down database file...");
-                    SW.WriteLine(Convert.ToString(DB.Num) + "\t" + DB.Name + "\t" + DB.LicenceType + "\t" + DB.DeclarationDate + "\t" + DB.ExpiryDate + "\t" + (DB.UserID + 71));
+                    SW.WriteLine(Convert.ToString(DB.Num) + "\t" + DB.Name + "\t" + DB.LicenceType + "\t" + DB.DeclarationDate + "\t" + DB.ExpiryDate + "\t" + (DB.UserID + 71) + "\t" + DB.Username + "\t" + DB.UserPassword);
                 }
 
                 SW.Close();
@@ -121,6 +132,7 @@ namespace Licence_Data_Base
                 {
                     Console.WriteLine("Uploading database...");
                     WriteFTP(FTPInfo, Path_B);
+                    File.Delete(Path_B);
                 }
 
                 Console.Clear();
@@ -149,8 +161,8 @@ namespace Licence_Data_Base
             {
                 FileStrings = SR.ReadLine().Split('\t');
 
-                if (FileStrings.Length == 6)
-                    LicenceList_B.Add(new DataBase(LicenceList_B, FileStrings[1], Convert.ToInt16(FileStrings[2]), FileStrings[3], FileStrings[4], (Convert.ToInt32(FileStrings[5]) - 71)));
+                if (FileStrings.Length == 8)
+                    LicenceList_B.Add(new DataBase(LicenceList_B, FileStrings[1], Convert.ToInt16(FileStrings[2]), FileStrings[3], FileStrings[4], (Convert.ToInt32(FileStrings[5]) - 71), FileStrings[6], FileStrings[7]));
             }
 
             SR.Close();
@@ -226,11 +238,11 @@ namespace Licence_Data_Base
                 client.Connect(FTPInfo.TimeoutFTP, FTPInfo.FTP_SERVER, FTPInfo.FTP_PORT);
                 client.Login(FTPInfo.TimeoutFTP, FTPInfo.FTP_USER, FTPInfo.FTP_PASSWORD);
 
-                client.GetFile(FTPInfo.TimeoutFTP, Path, "/MANDB.bcldb");
+                client.GetFile(FTPInfo.TimeoutFTP, Path, "/public_html/Databases/MANDB.bcldb");
 
                 client.Disconnect(FTPInfo.TimeoutFTP);
             }
-            catch (BytesRoad.Net.Ftp.FtpTimeoutException)
+            catch (FtpTimeoutException)
             {
                 Console.WriteLine("Error: timed out");
                 Console.WriteLine("\nHit any key to exit...");
@@ -254,7 +266,7 @@ namespace Licence_Data_Base
             client.Connect(FTPInfo.TimeoutFTP, FTPInfo.FTP_SERVER, FTPInfo.FTP_PORT);
             client.Login(FTPInfo.TimeoutFTP, FTPInfo.FTP_USER, FTPInfo.FTP_PASSWORD);
 
-            client.PutFile(FTPInfo.TimeoutFTP, "/MANDB.bcldb", Path);
+            client.PutFile(FTPInfo.TimeoutFTP, "/public_html/Databases/MANDB.bcldb", Path);
 
             client.Disconnect(FTPInfo.TimeoutFTP);
         }
@@ -283,8 +295,10 @@ namespace Licence_Data_Base
         public string DeclarationDate;
         public string ExpiryDate;
         public long UserID;
+        public string Username;
+        public string UserPassword;
 
-        public DataBase(List<DataBase> LicenceList, string Name, int LicenceType, string DeclarationDate, string ExpiryDate, long UID)
+        public DataBase(List<DataBase> LicenceList, string Name, int LicenceType, string DeclarationDate, string ExpiryDate, long UID, string Username, string Pass)
         {
             Num = LicenceList.Count + 1;
             this.Name = Name;
@@ -292,6 +306,8 @@ namespace Licence_Data_Base
             this.DeclarationDate = DeclarationDate;
             this.ExpiryDate = ExpiryDate;
             UserID = UID;
+            this.Username = Username;
+            UserPassword = Pass;
         }
     }
 
